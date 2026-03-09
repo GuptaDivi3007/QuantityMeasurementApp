@@ -4,25 +4,39 @@ public class QuantityMeasurementApp {
 
     public static void main(String[] args) {
 
-        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCHES);
+        
+        QuantityWeight w1 = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityWeight w2 = new QuantityWeight(1000.0, WeightUnit.GRAM);
 
-        System.out.println(q1.convertTo(LengthUnit.INCHES));
+        System.out.println(w1.equals(w2));
 
-        System.out.println(q1.add(q2, LengthUnit.FEET));
+        System.out.println(w1.convertTo(WeightUnit.POUND));
 
-        QuantityLength q3 = new QuantityLength(36.0, LengthUnit.INCHES);
-        QuantityLength q4 = new QuantityLength(1.0, LengthUnit.YARDS);
+        QuantityWeight result1 = w1.add(w2);
+        System.out.println(result1);
 
-        System.out.println(q3.equals(q4));
+        QuantityWeight result2 = w1.add(w2, WeightUnit.GRAM);
+        System.out.println(result2);
 
-        QuantityLength q5 = new QuantityLength(1.0, LengthUnit.YARDS);
-        QuantityLength q6 = new QuantityLength(3.0, LengthUnit.FEET);
+        QuantityWeight w3 = new QuantityWeight(2.0, WeightUnit.POUND);
+        System.out.println(w3.convertTo(WeightUnit.KILOGRAM));
 
-        System.out.println(q5.add(q6, LengthUnit.YARDS));
 
-        QuantityLength q7 = new QuantityLength(2.54, LengthUnit.CENTIMETERS);
+        
+        QuantityLength l1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength l2 = new QuantityLength(12.0, LengthUnit.INCHES);
 
-        System.out.println(q7.convertTo(LengthUnit.INCHES));
+        System.out.println(l1.equals(l2));
+
+        System.out.println(l1.convertTo(LengthUnit.YARDS));
+
+        QuantityLength result3 = l1.add(l2, LengthUnit.FEET);
+        System.out.println(result3);
+
+        QuantityLength result4 = l1.add(l2, LengthUnit.INCHES);
+        System.out.println(result4);
+
+        QuantityLength l3 = new QuantityLength(3.0, LengthUnit.YARDS);
+        System.out.println(l3.convertTo(LengthUnit.FEET));
     }
 }
