@@ -28,21 +28,6 @@ public class QuantityMeasurementApp {
         Quantity<LengthUnit> l2 = new Quantity<>(6.0, LengthUnit.INCHES);
 
         demonstrateSubtraction(l1, l2, LengthUnit.FEET);
-        demonstrateSubtraction(l1, l2, LengthUnit.INCHES);
         demonstrateDivision(l1, new Quantity<>(2.0, LengthUnit.FEET));
-
-        
-        Quantity<WeightUnit> w1 = new Quantity<>(10.0, WeightUnit.KILOGRAM);
-        Quantity<WeightUnit> w2 = new Quantity<>(5000.0, WeightUnit.GRAM);
-
-        demonstrateSubtraction(w1, w2, WeightUnit.KILOGRAM);
-        demonstrateDivision(w1, new Quantity<>(5.0, WeightUnit.KILOGRAM));
-
-        
-        Quantity<VolumeUnit> v1 = new Quantity<>(5.0, VolumeUnit.LITRE);
-        Quantity<VolumeUnit> v2 = new Quantity<>(500.0, VolumeUnit.MILLILITRE);
-
-        demonstrateSubtraction(v1, v2, VolumeUnit.LITRE);
-        demonstrateDivision(v1, new Quantity<>(10.0, VolumeUnit.LITRE));
     }
 }
