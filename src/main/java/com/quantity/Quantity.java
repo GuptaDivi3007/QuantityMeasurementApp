@@ -1,7 +1,5 @@
 package com.quantity;
 
-import java.util.Objects;
-
 public class Quantity<U extends Enum<U> & IMeasurable> {
 
     private final double value;
@@ -11,9 +9,6 @@ public class Quantity<U extends Enum<U> & IMeasurable> {
 
         if (unit == null)
             throw new IllegalArgumentException("Unit cannot be null");
-
-        if (!Double.isFinite(value))
-            throw new IllegalArgumentException("Value must be finite");
 
         this.value = value;
         this.unit = unit;
@@ -27,117 +22,59 @@ public class Quantity<U extends Enum<U> & IMeasurable> {
         return unit;
     }
 
-    // ---------------- Conversion ----------------
+    // ---------- CONVERSION (UPDATED FOR UC15) ----------
 
-    public Quantity<U> convertTo(U targetUnit) {
+    public Quantity convertTo(IMeasurable targetUnit) {
 
         if (targetUnit == null)
             throw new IllegalArgumentException("Target unit cannot be null");
 
-        if (!unit.getClass().equals(targetUnit.getClass()))
-            throw new IllegalArgumentException("Incompatible unit types");
-
         double baseValue = unit.convertToBaseUnit(value);
-        double result = targetUnit.convertFromBaseUnit(baseValue);
+        double convertedValue = targetUnit.convertFromBaseUnit(baseValue);
 
-        return new Quantity<>(roundToTwoDecimals(result), targetUnit);
+        return new Quantity(convertedValue, (Enum) targetUnit);
     }
 
-    // ---------------- Addition ----------------
+    // ---------- ADDITION ----------
 
     public Quantity<U> add(Quantity<U> other) {
 
-        validateOperand(other);
-        unit.validateOperationSupport("ADD");
-
-        double base1 = unit.convertToBaseUnit(this.value);
+        double base1 = unit.convertToBaseUnit(value);
         double base2 = other.unit.convertToBaseUnit(other.value);
 
-        double resultBase = base1 + base2;
+        double result = unit.convertFromBaseUnit(base1 + base2);
 
-        double result = unit.convertFromBaseUnit(resultBase);
-
-        return new Quantity<>(roundToTwoDecimals(result), unit);
+        return new Quantity<>(result, unit);
     }
 
-    public Quantity<U> add(Quantity<U> other, U targetUnit) {
-
-        validateOperand(other);
-        unit.validateOperationSupport("ADD");
-
-        if (targetUnit == null)
-            throw new IllegalArgumentException("Target unit cannot be null");
-
-        double base1 = unit.convertToBaseUnit(this.value);
-        double base2 = other.unit.convertToBaseUnit(other.value);
-
-        double resultBase = base1 + base2;
-
-        double result = targetUnit.convertFromBaseUnit(resultBase);
-
-        return new Quantity<>(roundToTwoDecimals(result), targetUnit);
-    }
-
-    // ---------------- Subtraction ----------------
+    // ---------- SUBTRACTION ----------
 
     public Quantity<U> subtract(Quantity<U> other) {
 
-        validateOperand(other);
-        unit.validateOperationSupport("SUBTRACT");
-
-        double base1 = unit.convertToBaseUnit(this.value);
+        double base1 = unit.convertToBaseUnit(value);
         double base2 = other.unit.convertToBaseUnit(other.value);
 
-        double resultBase = base1 - base2;
+        double result = unit.convertFromBaseUnit(base1 - base2);
 
-        double result = unit.convertFromBaseUnit(resultBase);
-
-        return new Quantity<>(roundToTwoDecimals(result), unit);
+        return new Quantity<>(result, unit);
     }
 
-    // ---------------- Division ----------------
+    // ---------- DIVISION ----------
 
     public double divide(Quantity<U> other) {
 
-        validateOperand(other);
-        unit.validateOperationSupport("DIVIDE");
-
-        double base1 = unit.convertToBaseUnit(this.value);
+        double base1 = unit.convertToBaseUnit(value);
         double base2 = other.unit.convertToBaseUnit(other.value);
 
-        if (base2 == 0)
-            throw new ArithmeticException("Division by zero");
-
-        return roundToTwoDecimals(base1 / base2);
+        return base1 / base2;
     }
 
-    // ---------------- Helper Methods ----------------
-
-    private void validateOperand(Quantity<U> other) {
-
-        if (other == null)
-            throw new IllegalArgumentException("Operand cannot be null");
-
-        if (!unit.getClass().equals(other.unit.getClass()))
-            throw new IllegalArgumentException("Different measurement categories");
-    }
-
-    private double roundToTwoDecimals(double val) {
-        return Math.round(val * 100.0) / 100.0;
-    }
-
-    // ---------------- Equality ----------------
+    // ---------- EQUALITY ----------
 
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj)
-            return true;
-
         if (!(obj instanceof Quantity<?> q))
-            return false;
-
-        if (!unit.getClass().equals(q.unit.getClass()))
             return false;
 
         double base1 = unit.convertToBaseUnit(value);
@@ -147,12 +84,7 @@ public class Quantity<U extends Enum<U> & IMeasurable> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(unit.convertToBaseUnit(value));
-    }
-
-    @Override
     public String toString() {
-        return "Quantity(" + value + ", " + unit.getUnitName() + ")";
+        return value + " " + unit.getUnitName();
     }
 }
