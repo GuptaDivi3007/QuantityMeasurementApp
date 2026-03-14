@@ -18,6 +18,14 @@ public class QuantityMeasurementController {
 
         System.out.println("Equality Result : " + result);
     }
+    
+    // Convert Quantities
+    public void convert(QuantityDTO q1, String target) {
+
+        QuantityDTO result = service.convert(q1, target);
+
+        System.out.println("Converted Result : " + result.getValue() + " " + result.getUnit());
+    }
 
     // Add Quantities
     public void add(QuantityDTO q1, QuantityDTO q2) {

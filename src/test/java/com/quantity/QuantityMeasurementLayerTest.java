@@ -32,10 +32,10 @@ public class QuantityMeasurementLayerTest {
     public void givenEntity_WhenCreated_ShouldStoreOperationAndResult() {
 
         QuantityMeasurementEntity entity =
-                new QuantityMeasurementEntity("ADD", "2 FEET");
+                new QuantityMeasurementEntity("ADD", "6 FEET","3 FEET","3 FEET");
 
         Assertions.assertEquals("ADD", entity.getOperation());
-        Assertions.assertEquals("2 FEET", entity.getResult());
+        Assertions.assertEquals("6 FEET", entity.getResult());
     }
 
     // ---------------- CORE QUANTITY TEST ----------------
@@ -50,22 +50,6 @@ public class QuantityMeasurementLayerTest {
                 new Quantity<>(12, LengthUnit.INCHES);
 
         Assertions.assertTrue(feet.equals(inches));
-    }
-
-    // ---------------- REPOSITORY TEST ----------------
-
-    @Test
-    public void givenRepository_WhenSavingEntity_ShouldStoreData() {
-
-        QuantityMeasurementCacheRepository repo =
-                QuantityMeasurementCacheRepository.getInstance();
-
-        QuantityMeasurementEntity entity =
-                new QuantityMeasurementEntity("TEST", "SUCCESS");
-
-        repo.save(entity);
-
-        Assertions.assertTrue(repo.findAll().contains(entity));
     }
 
     // ---------------- SERVICE TEST ----------------

@@ -48,7 +48,7 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
 
         Quantity<?> result = a.add((Quantity) b);
 
-        repository.save(new QuantityMeasurementEntity("ADD", result.toString()));
+        repository.save(new QuantityMeasurementEntity("ADD", result.toString(), q1.getValue() + " " + q1.getUnit(), q2.getValue() + " " + q2.getUnit()));
 
         return new QuantityDTO(result.getValue(), result.getUnit().toString());
     }
@@ -61,7 +61,7 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
 
         Quantity<?> result = a.subtract((Quantity) b);
 
-        repository.save(new QuantityMeasurementEntity("SUBTRACT", result.toString()));
+        repository.save(new QuantityMeasurementEntity("SUBTRACT", result.toString(), q1.getValue() + " " + q1.getUnit(), q2.getValue() + " " + q2.getUnit()));
 
         return new QuantityDTO(result.getValue(), result.getUnit().toString());
     }
@@ -74,7 +74,7 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
 
         double result = a.divide((Quantity) b);
 
-        repository.save(new QuantityMeasurementEntity("DIVIDE", String.valueOf(result)));
+        repository.save(new QuantityMeasurementEntity("DIVIDE", String.valueOf(result), q1.getValue() + " " + q1.getUnit(), q2.getValue() + " " + q2.getUnit()));
 
         return result;
     }
@@ -87,7 +87,7 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
 
         boolean result = a.equals(b);
 
-        repository.save(new QuantityMeasurementEntity("COMPARE", String.valueOf(result)));
+        repository.save(new QuantityMeasurementEntity("COMPARE", String.valueOf(result), q1.getValue() + " " + q1.getUnit(), q2.getValue() + " " + q2.getUnit()));
 
         return result;
     }
@@ -101,7 +101,7 @@ public class QuantityMeasurementServiceImpl implements IQuantityMeasurementServi
 
         Quantity<?> result = q.convertTo(target);
 
-        repository.save(new QuantityMeasurementEntity("CONVERT", result.toString()));
+        repository.save(new QuantityMeasurementEntity("CONVERT", result.toString(), input.getValue() + " " + input.getUnit(), targetUnit));
 
         return new QuantityDTO(result.getValue(), result.getUnit().toString());
     }

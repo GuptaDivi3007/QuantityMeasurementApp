@@ -9,9 +9,9 @@ public class QuantityMeasurementApp {
 
     public static void main(String[] args) {
 
-        IQuantityMeasurementRepository repo = QuantityMeasurementCacheRepository.getInstance();
+        QuantityMeasurementDBRepository repo = new QuantityMeasurementDBRepository();
 
-        IQuantityMeasurementService service = new QuantityMeasurementServiceImpl(repo);
+        QuantityMeasurementServiceImpl service = new QuantityMeasurementServiceImpl(repo);
 
         QuantityMeasurementController controller = new QuantityMeasurementController(service);
 
@@ -19,7 +19,9 @@ public class QuantityMeasurementApp {
         QuantityDTO q2 = new QuantityDTO(12,"INCHES");
 
         controller.compare(q1,q2);
-
         controller.add(q1,q2);
+        controller.convert(q1,"INCHES");
+        controller.subtract(q1,q2);
+        controller.divide(q1,q2);
     }
 }
