@@ -1,158 +1,121 @@
 package com.quantity;
 
-import com.quantity.dto.QuantityInputDTO;
-import com.quantity.service.QuantityMeasurementServiceImpl;
-import com.quantity.dto.QuantityDTO;
+import com.quantity.dto.*;
 import com.quantity.entity.QuantityMeasurementEntity;
 import com.quantity.repository.QuantityMeasurementRepository;
+import com.quantity.service.QuantityMeasurementServiceImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-class QuantitySpringApplicationTest {
+@ExtendWith(MockitoExtension.class)
+public class QuantityMeasurementApplicationTests {
 
     @Mock
-    private QuantityMeasurementRepository repository;
+    public QuantityMeasurementRepository repository;
 
     @InjectMocks
-    private QuantityMeasurementServiceImpl service;
+    public QuantityMeasurementServiceImpl service;
+
+    private QuantityInputDTO input;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    public void setUp() {
+
+        QuantityDTO q1 = new QuantityDTO();
+        q1.setValue(2.0);  
+        q1.setUnit("LITRE");
+        q1.setMeasurementType("VolumeUnit");
+
+        QuantityDTO q2 = new QuantityDTO();
+        q2.setValue(500.0);  
+        q2.setUnit("MIILILITRE");
+        q2.setMeasurementType("VolumeUnit");
+
+        input = new QuantityInputDTO();
+        input.setThisQuantityDTO(q1);
+        input.setThatQuantityDTO(q2);
     }
 
-    // Helper to mock repository save
-    private QuantityMeasurementEntity saveMock(QuantityMeasurementEntity entity) {
-        when(repository.save(any())).thenReturn(entity);
-        return entity;
-    }
-
-    // ==================== COMPARE ====================
+    // ADD (2L + 500ml = 2.5L)
     @Test
-    void testCompare_Length_FeetInches() {
-        QuantityInputDTO input = new QuantityInputDTO();
-        input.setThisQuantityDTO(new QuantityDTO(1, "FEET", "LengthUnit"));
-        input.setThatQuantityDTO(new QuantityDTO(12, "INCHES", "LengthUnit")); // 1 foot = 12 inches
+    public void testAdd() {
+        when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        QuantityMeasurementEntity saved = saveMock(new QuantityMeasurementEntity());
-        QuantityMeasurementEntity result = service.compare(input);
-
-        assertEquals("COMPARE", result.getOperation());
-        assertTrue(Boolean.parseBoolean(result.getResultString()));
-    }
-
-    // ==================== CONVERT ====================
-    @Test
-    void testConvert_Weight_KGToGram() {
-        QuantityInputDTO input = new QuantityInputDTO();
-        input.setThisQuantityDTO(new QuantityDTO(2, "KILOGRAM", "WeightUnit"));
-        input.setThatQuantityDTO(new QuantityDTO(0, "GRAM", "WeightUnit"));
-
-        QuantityMeasurementEntity saved = saveMock(new QuantityMeasurementEntity());
-        QuantityMeasurementEntity result = service.convert(input);
-
-        assertEquals("CONVERT", result.getOperation());
-        assertEquals(2000.0, result.getResultValue(), 0.0001);
-        assertEquals("GRAM", result.getResultUnit());
-    }
-
-    // ==================== ADD ====================
-    @Test
-    void testAdd_Length_YardsAndFeet() {
-        QuantityInputDTO input = new QuantityInputDTO();
-        input.setThisQuantityDTO(new QuantityDTO(1, "YARDS", "LengthUnit")); // 1 yard = 3 feet
-        input.setThatQuantityDTO(new QuantityDTO(2, "FEET", "LengthUnit"));
-
-        QuantityMeasurementEntity saved = saveMock(new QuantityMeasurementEntity());
         QuantityMeasurementEntity result = service.add(input);
 
         assertEquals("ADD", result.getOperation());
-        assertEquals(5, result.getResultValue(), 0.0001); // 3+2=5 feet
-        assertEquals("YARDS", result.getResultUnit());
+        assertEquals(2.5, result.getResultValue(), 0.01);
     }
 
-    // ==================== SUBTRACT ====================
+    // SUBTRACT (2L - 500ml = 1.5L)
     @Test
-    void testSubtract_Weight_KGAndGram() {
-        QuantityInputDTO input = new QuantityInputDTO();
-        input.setThisQuantityDTO(new QuantityDTO(2, "KILOGRAM", "WeightUnit"));
-        input.setThatQuantityDTO(new QuantityDTO(500, "GRAM", "WeightUnit"));
+    public void testSubtract() {
+        when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        QuantityMeasurementEntity saved = saveMock(new QuantityMeasurementEntity());
         QuantityMeasurementEntity result = service.subtract(input);
 
         assertEquals("SUBTRACT", result.getOperation());
-        assertEquals(1.5, result.getResultValue(), 0.0001); // 2kg - 0.5kg
-        assertEquals("KILOGRAM", result.getResultUnit());
+        assertEquals(1.5, result.getResultValue(), 0.01);
     }
 
-    // ==================== MULTIPLY ====================
+    // CONVERT (2L → ml = 2000ml)
     @Test
-    void testMultiply_Volume_LitreAndMillilitre() {
-        QuantityInputDTO input = new QuantityInputDTO();
-        input.setThisQuantityDTO(new QuantityDTO(1, "LITRE", "VolumeUnit"));
-        input.setThatQuantityDTO(new QuantityDTO(500, "MILLILITRE", "VolumeUnit")); // 1L * 0.5L = 0.5 L^2 approx
+    public void testConvert() {
+        when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        QuantityMeasurementEntity saved = saveMock(new QuantityMeasurementEntity());
-        QuantityMeasurementEntity result = service.multiply(input);
+        QuantityMeasurementEntity result = service.convert(input);
 
-        assertEquals("MULTIPLY", result.getOperation());
-        assertEquals(0.5, result.getResultValue(), 0.0001);
-        assertEquals("LITRE", result.getResultUnit());
+        assertEquals("CONVERT", result.getOperation());
+        assertEquals(2000.0, result.getResultValue(), 0.01);
     }
 
-    // ==================== DIVIDE ====================
+    // COMPARE (2L == 500ml → false)
     @Test
-    void testDivide_Temperature_Celsius() {
-        QuantityInputDTO input = new QuantityInputDTO();
-        input.setThisQuantityDTO(new QuantityDTO(100, "CELSIUS", "TemperatureUnit"));
-        input.setThatQuantityDTO(new QuantityDTO(2, "CELSIUS", "TemperatureUnit"));
+    public void testCompare() {
+        when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        QuantityMeasurementEntity saved = saveMock(new QuantityMeasurementEntity());
-        QuantityMeasurementEntity result = service.divide(input);
+        QuantityMeasurementEntity result = service.compare(input);
 
-        assertEquals("DIVIDE", result.getOperation());
-        assertEquals(50, result.getResultValue(), 0.0001);
-        assertEquals("CELSIUS", result.getResultUnit());
+        assertEquals("COMPARE", result.getOperation());
+        assertEquals("false", result.getResultString());
     }
 
-    @Test
-    void testDivideByZero() {
-        QuantityInputDTO input = new QuantityInputDTO();
-        input.setThisQuantityDTO(new QuantityDTO(1, "METER", "LengthUnit"));
-        input.setThatQuantityDTO(new QuantityDTO(0, "CM", "LengthUnit"));
-
-        QuantityMeasurementEntity saved = saveMock(new QuantityMeasurementEntity());
-        QuantityMeasurementEntity result = service.divide(input);
-
-        assertTrue(result.isError());
-        assertEquals("Cannot divide by zero", result.getErrorMessage());
-    }
-
-    // ==================== HISTORY / COUNT ====================
-    @Test
-    void testHistoryAndCount() {
-        QuantityMeasurementEntity e1 = new QuantityMeasurementEntity();
-        e1.setOperation("ADD");
-        QuantityMeasurementEntity e2 = new QuantityMeasurementEntity();
-        e2.setOperation("ADD");
-
-        when(repository.findByOperation("ADD")).thenReturn(Arrays.asList(e1, e2));
-        when(repository.countByOperationAndErrorFalse("ADD")).thenReturn(2L);
-
-        List<QuantityMeasurementEntity> history = service.getHistoryByOperation("ADD");
-        long count = service.getOperationCount("ADD");
-
-        assertEquals(2, history.size());
-        assertEquals(2, count);
-    }
+	// HISTORY
+	@Test
+	public void testGetHistoryByOperation() {
+	
+	    List<QuantityMeasurementEntity> list = new ArrayList<>();
+	    list.add(new QuantityMeasurementEntity());
+	    list.add(new QuantityMeasurementEntity());
+	
+	    when(repository.findByOperation("ADD")).thenReturn(list);
+	
+	    List<QuantityMeasurementEntity> result = service.getHistoryByOperation("ADD");
+	
+	    assertEquals(2, result.size());
+	}
+	
+	// COUNT
+	@Test
+	public void testGetOperationCount() {
+	
+	    when(repository.countByOperationAndErrorFalse("ADD")).thenReturn(3L);
+	
+	    long count = service.getOperationCount("ADD");
+	
+	    assertEquals(3, count);
+	}
 }

@@ -12,10 +12,10 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.spring</groupId>
-    <artifactId>QuantitySpring</artifactId>
+    <groupId>com.quantity</groupId>
+    <artifactId>QuantityMeasurement</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>QuantitySpring</name>
+    <name>QuantityMeasurement</name>
     <description>Quantity Measurement Project</description>
 
     <properties>
