@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.quantity.entity.QuantityMeasurementEntity;
 
-import java.util.List;
-
 @Repository
 public interface QuantityMeasurementRepository
         extends JpaRepository<QuantityMeasurementEntity, Long> {
