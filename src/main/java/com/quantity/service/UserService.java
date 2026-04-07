@@ -26,7 +26,9 @@ public class UserService {
     // ✅ REGISTER
     public String register(RegisterDTO dto) {
 
-        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+    	User existingUser = userRepository.findByEmail(dto.getEmail());
+
+        if (existingUser != null) {
             return "User already exists";
         }
 
@@ -45,10 +47,10 @@ public class UserService {
     // ✅ LOGIN
     public String login(LoginDTO dto) {
 
-        User user = userRepository.findByEmail(dto.getEmail()).orElse(null);
+    	User user = userRepository.findByEmail(dto.getEmail());
 
         if (user == null) {
-            return "User not found ";
+            return "User not found";
         }
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {

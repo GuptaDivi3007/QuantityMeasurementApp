@@ -19,9 +19,17 @@ public class JwtFilter extends OncePerRequestFilter {
 	protected boolean shouldNotFilter(HttpServletRequest request) {
 	    String path = request.getServletPath();
 
-	    return path.startsWith("/api/v1/users"); // skip login/register
+	    return path.startsWith("/auth") ||
+	           path.startsWith("/oauth2") ||
+	           path.startsWith("/login") ||
+	           path.startsWith("/error");
 	}
 
+//	@Override
+//	protected boolean shouldNotFilter(HttpServletRequest request) {
+//	    return true;
+//	}
+	
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -51,4 +59,5 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+    
 }
