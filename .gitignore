@@ -13,13 +13,13 @@
 !README.md
 !mvnw
 !mvnw.cmd
-!.gitignore
 
 ############################
 # 📦 Maven
 ############################
 target/
 .mvn/
+.gitignore
 
 ############################
 # 📄 Spring Boot
