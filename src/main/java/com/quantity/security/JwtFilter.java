@@ -25,11 +25,6 @@ public class JwtFilter extends OncePerRequestFilter {
 	           path.startsWith("/error");
 	}
 
-//	@Override
-//	protected boolean shouldNotFilter(HttpServletRequest request) {
-//	    return true;
-//	}
-	
     @Autowired
     private JwtUtil jwtUtil;
 
