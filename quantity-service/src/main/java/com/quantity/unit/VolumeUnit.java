@@ -22,7 +22,7 @@ public enum VolumeUnit implements IMeasurable {
         return name();
     }
 
-    // Convert → Base (LITER)
+    // Convert → Base (LITRE)
     @Override
     public double toBaseUnit(double value) {
         return value * conversionFactor;

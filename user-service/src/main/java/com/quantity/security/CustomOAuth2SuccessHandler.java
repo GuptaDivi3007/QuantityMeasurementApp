@@ -33,11 +33,11 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-        // 🔹 Get user details from Google
+        // Get user details from Google
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
 
-        // 🔹 Check if user exists
+        // Check if user exists
         User user = userRepository.findByEmail(email);
 
         if (user == null) {
@@ -49,10 +49,10 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         System.out.println("OAuth Success Handler Called");
         
-        // 🔹 Generate JWT token
+        // Generate JWT token
         String token = jwtUtil.generateToken(email);
 
-        // 🔹 Send token in response
+        // Send token in response
         response.setContentType("application/json");
         
 //        response.sendRedirect("http://localhost:8080/success?token=" + token);
