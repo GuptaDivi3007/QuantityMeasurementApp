@@ -32,7 +32,6 @@ public class JwtAuthFilter implements GlobalFilter {
                 .getHeaders()
                 .getFirst("Authorization");
 
-        // No token → 401 (NOT 500)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             exchange.getResponse()
                     .setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
@@ -42,14 +41,12 @@ public class JwtAuthFilter implements GlobalFilter {
         String token = authHeader.substring(7);
 
         try {
-            // invalid token → 401
             if (!jwtUtil.validateToken(token)) {
                 exchange.getResponse()
                         .setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
                 return exchange.getResponse().setComplete();
             }
         } catch (Exception e) {
-            // any exception → 401 (NOT 500)
             exchange.getResponse()
                     .setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
